@@ -1,45 +1,143 @@
 import React from 'react';
+
+const initialState = {
+    num1: '',
+    num2: '',
+    skarleth: true,
+    operacion: null,
+    mostrar: ''
+};
+
 class Calculadora extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            num1: NaN,
-            num2: NaN,
-            mostrar: 69
-        };
+        this.state = initialState;
+    }
+
+    resetState() {
+        this.setState(initialState);
     }
 
     resolver(value) {
-        
-        console.log('>>', this.state)
-        if (Number.isInteger(value)) {
-            console.log('NÚMERO');
-            if(this.state.num1){
+        const { mostrar, num1, num2, skarleth, operacion } = this.state;
 
-            }else{
-                
+        if (value === '.') {
+            if (skarleth) {
+                if (num1.indexOf(value) === -1) {
+                    this.setState(state => ({
+                        num1: num1 + value,
+                        mostrar: mostrar + value
+                    }));
+                }
+            } else {
+                if (num2.indexOf(value) === -1) {
+                    this.setState(state => ({
+                        num2: num2 + value,
+                        mostrar: mostrar + value
+                    }));
+                }
+            }
+        } else if (Number.isInteger(value)) {
+            if (skarleth) {
+                this.setState(state => ({
+                    num1: num1 + value,
+                    mostrar: mostrar + value
+                }));
+            } else {
+                if (num2.indexOf('.')) {
+                    this.setState({
+                        num2: num2 + value,
+                        mostrar: mostrar + value
+                    });
+                }
             }
         } else {
-            console.log('Operación');
-        }
+            if (value === 'c') {
+                this.resetState();
+            
+            }else if (operacion) {
+                this.setState(state =>({
+                    mostrar: mostrar.replace(operacion, value),
+                    operacion: operacion,
+                }))
+                
+            } else if (value === '=') {
+                this.setState(state => ({
+                    mostrar: this.calcular(operacion),
+                }));
+                this.setState(state => ({
+                        num1: '',
+                        num2: '',
+                        operacion: null,
+                    }))
+            } else if (value === '+') {
+                this.setState(state => ({
+                    skarleth: false,
+                    operacion: '+',
+                    mostrar: mostrar + value
+                }));
+            } else if (value === '-') {
+                this.setState(state => ({
+                    skarleth: false,
+                    operacion: '-',
+                    mostrar: mostrar + value
+                }));
+            } else if (value === '*') {
+                this.setState(state => ({
+                    skarleth: false,
+                    operacion: '*',
+                    mostrar: mostrar + value
+                }));
+            } else if (value === '/') {
+                this.setState(state => ({
+                    skarleth: false,
+                    operacion: '/',
+                    mostrar: mostrar + value
+                }));
 
-        this.setState(state => ({
-            //mostrar: NaN
-        }));
+            }
+        }
+        console.log('>>', this.state);
     }
 
-    handleChange(e) {
-        this.setState(state => ({ mostar: e.target.value }));
+    calcular(operacion) {
+        let resultado = 0;
+        const { num1, num2 } = this.state;
+
+        if (operacion === '+') {
+            resultado = Number(num1) + Number(num2);
+        } else if (operacion === '-') {
+            resultado = num1 - num2;
+        } else if (operacion === '/') {
+            resultado = num1 / num2;
+        } else if (operacion === '*') {
+            resultado = num1 * num2;
+        } else {
+            resultado = 1111
+        }
+        return resultado;
+    }
+
+    handleChange = (e) => {
+
+        this.setState({
+            mostrar: e.target.value
+        })
+        console.log(this.state)
     }
 
     render() {
+        const {
+            mostrar,
+        } = this.state;
+
         return (
             <div className="">
                 <table border="1">
                     <tr>
                         <td colspan="3">
-                            <input type="text" value={this.state.mostar}/>
+                            <input type="text" value={mostrar} onChange={this.handleChange} />
                         </td>
                         <td><button onClick={() => this.resolver('c')}>c</button></td>
                     </tr>
