@@ -1,15 +1,18 @@
 import React from 'react';
 import './App.css';
-import Calculadora from './componentes/Calculadora';
+import AppRouter from "./component/RouterComponent";
+import NavBar from "./component/Navbar";
+import Container from '@material-ui/core/Container';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <Calculadora/>
-      </header>    
-      </div>
-  );
+    return (
+        <div>
+            <NavBar/>
+            <Container>
+                <AppRouter/>
+            </Container>
+        </div>
+    );
 }
 
 export default App;
